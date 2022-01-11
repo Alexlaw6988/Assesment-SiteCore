@@ -1,0 +1,7 @@
+Core/bin/
+Core/obj/
+GeneralKnowledge.Test/bin/
+GeneralKnowledge.Test/obj/
+Infrastructure/bin/
+Infrastructure/obj/
+WebExperience.Test/wwwroot/ClientApp/.angular/
