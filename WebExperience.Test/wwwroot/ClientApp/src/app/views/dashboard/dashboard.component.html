@@ -3,15 +3,34 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header">
+        <!-- <div class="card-header">
           Assets
-        </div>
+        </div> -->
         <div class="card-body">
           <div [hidden]="data.length > 0">....Loading, Please Wait.</div>
-          <ngx-datatable [hidden]="data.length === 0" tableClass="table table-striped table-bordered table-hover" [tableId]="'assetTable'"
-            [data]="data" [options]="options" [columns]="columns" (rowClick)="edit($event)">
+          <ngx-datatable [hidden]="data.length === 0" tableClass="table table-striped table-bordered table-hover"
+            [tableId]="'assetTable'" [data]="data" [options]="options" [columns]="columns">
+            <ngx-caption>
+              <div class="row">
+                <div class="col-sm-6 col-xs-6 col-6 ">
+                  <b>
+                    <i class="fa fa-table" aria-hidden="true"></i>
+                    Assets
+                  </b>
+                </div>
+                <div class="col-sm-6 col-xs-6 col-6  text-right">
+                  <button type="button" class="btn btn-primary btn-sm" (click)="onAdd()">
+                    <i class="fa fa-plus" aria-hidden="true"></i> Add
+                  </button>
+                </div>
+              </div>
+            </ngx-caption>
             <ng-template #actionTpl let-row let-rowIndex="rowIndex" let-columnValue="columnValue">
-              <button class="btn btn-primary" (click)="edit(row)" data-toggle="modal">View</button>
+              <div class="row col-12 align-items-center">
+                <button class="btn btn-primary btn-sm m-auto" (click)="onView(row)" data-toggle="modal">View</button>
+                <button class="btn btn-warning btn-sm m-auto" (click)="onEdit(row)" data-toggle="modal">Edit</button>
+                <button class="btn btn-danger btn-sm m-auto" (click)="onDelete(row)" data-toggle="modal">Delete</button>
+              </div>
             </ng-template>
           </ngx-datatable>
         </div>
@@ -31,40 +50,83 @@
         </button>
       </div><!-- /.modal-header -->
       <div class="modal-body">
-        <div class="row col-12">
+        <div *ngIf="action === actions.VIEW" class="row col-12">
           <div class="form-group w-100 m-0 row">
             <label class="col-md-4 col-form-label font-weight-bold">Assert Id :</label>
-              <label class="col-md-8 col-form-label">{{asset.assetId}}</label>
+            <label class="col-md-8 col-form-label">{{asset.assetId}}</label>
           </div>
           <div class="form-group w-100 m-0 row">
             <label class="col-md-4 col-form-label font-weight-bold">File Name :</label>
-               <label class="col-md-8 col-form-label">{{asset.fileName}}</label>
+            <label class="col-md-8 col-form-label">{{asset.fileName}}</label>
           </div>
           <div class="form-group w-100 m-0 row">
-            <label class="col-md-4 col-form-label font-weight-bold">Mime Type :</label>           
-              <label class="col-md-8 col-form-label">{{asset.mimeType}}</label>            
+            <label class="col-md-4 col-form-label font-weight-bold">Mime Type :</label>
+            <label class="col-md-8 col-form-label">{{asset.mimeType}}</label>
           </div>
           <div class="form-group w-100 m-0 row">
             <label class="col-md-4 col-form-label font-weight-bold">Email :</label>
-               <label class="col-md-8 col-form-label">{{asset.email}}</label>
+            <label class="col-md-8 col-form-label">{{asset.email}}</label>
           </div>
           <div class="form-group w-100 m-0 row">
             <label class="col-md-4 col-form-label font-weight-bold">Country :</label>
-               <label class="col-md-8 col-form-label">{{asset.email}}</label>
+            <label class="col-md-8 col-form-label">{{asset.country}}</label>
           </div>
           <div class="form-group w-100 m-0 row">
             <label class="col-md-4 col-form-label font-weight-bold">Description :</label>
-               <label class="col-md-8 col-form-label">{{asset.description}}</label>
+            <label class="col-md-8 col-form-label">{{asset.description}}</label>
           </div>
           <div class="form-group w-100 m-0 row">
             <label class="col-md-4 col-form-label font-weight-bold">Created By :</label>
-               <label class="col-md-8 col-form-label">{{asset.createdBy}}</label>
+            <label class="col-md-8 col-form-label">{{asset.createdBy}}</label>
           </div>
         </div>
         <!--/.row-->
+        <div *ngIf="action !== actions.VIEW">
+          <form  class="form-horizontal">            
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="fileName">File Name</label>
+              <div class="col-md-9">
+                <input type="text" id="fileName" name="fileName" [(ngModel)]="asset.fileName" class="form-control" >                
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="mimeType">Mime Type</label>
+              <div class="col-md-9">
+                <input type="text" id="mimeType" name="mimeType" [(ngModel)]="asset.mimeType" class="form-control" >
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="country">Country</label>
+              <div class="col-md-9">
+                <input type="text" id="country" name="country"  [(ngModel)]="asset.country"  class="form-control" >               
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="email">Email</label>
+              <div class="col-md-9">
+                <input type="email" id="email" name="email" [(ngModel)]="asset.email" class="form-control" autocomplete="email">
+              </div>
+            </div>  
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="description">Description</label>
+              <div class="col-md-9">
+                <textarea id="description" name="description" rows="5" class="form-control"  [(ngModel)]="asset.description" ></textarea>
+              </div>
+            </div>           
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="createdBy">Created By</label>
+              <div class="col-md-9">
+                <input type="text" id="createdBy" name="createdBy" [(ngModel)]="asset.createdBy" class="form-control" >
+              </div>
+            </div>          
+          </form>
+        </div>
       </div><!-- /.modal-body -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="myModal.hide()">Close</button>
+        <button type="submit" *ngIf="action === actions.CREATE"class="btn btn-sm btn-primary" (click)="createAsset()"><i class="fa fa-dot-circle-o"></i> Submit</button>
+        <button type="submit" *ngIf="action === actions.UPDATE"class="btn btn-sm btn-primary" (click)="updateAsset()"><i class="fa fa-dot-circle-o"></i> Update</button>
+        <button type="reset" [hidden]="action === actions.VIEW" class="btn btn-sm btn-danger" (click)="onReset()"><i class="fa fa-ban"></i> Reset</button>
+        <button type="button" class="btn btn-sm btn-secondary" (click)="myModal.hide()"><i class="fa fa-close"></i> Close</button>
       </div><!-- /.modal-footer -->
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

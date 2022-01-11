@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
@@ -33,6 +34,16 @@ namespace Infrastructure.Data
             return entity.Id;
         }
 
+        public async Task UpdateAsync(TEntity entity)
+        {
+            DbContext.Entry(entity).State = EntityState.Modified;
+            await DbContext.SaveChangesAsync();
+        }
 
+        public async Task DeleteAsync(TEntity entity)
+        {
+            DbContext.Set<TEntity>().Remove(entity);
+            await DbContext.SaveChangesAsync();
+        }
     }
 }

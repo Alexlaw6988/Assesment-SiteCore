@@ -1,0 +1,3 @@
+export enum CRUD{
+CREATE,UPDATE,PATCH,DELETE,VIEW
+}

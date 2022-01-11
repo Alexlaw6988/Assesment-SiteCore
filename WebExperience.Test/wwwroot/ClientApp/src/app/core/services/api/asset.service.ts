@@ -20,6 +20,19 @@ export class AssetService{
     return this.http.get<T>(this.baseDataURL + URL, { headers: this.getHttpHeaders()});
   }
 
+  private putRequest<T>(URL: string,data : T) {
+    return this.http.put(this.baseDataURL + URL,data, { headers: this.getHttpHeaders()});
+  }
+  private postRequest<T>(URL: string,data : T) {
+    return this.http.post<T>(this.baseDataURL + URL,data, { headers: this.getHttpHeaders()});
+  }
+  private deleteRequest(URL: string) {
+    return this.http.delete(this.baseDataURL + URL, { headers: this.getHttpHeaders()});
+  }
+  private patchRequest<T>(URL: string,data : T) {
+    return this.http.patch<T>(this.baseDataURL + URL,data,{ headers: this.getHttpHeaders()});
+  }
+
   private getHttpHeaders(){
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -32,5 +45,22 @@ export class AssetService{
   getAllAssets$(): Observable<AssetModel[]>{
     return this.getRequest<AssetModel[]>('/assets');
   }
+
+  createAsset$(data:AssetModel){
+    return this.postRequest<AssetModel>('/assets',data);
+  }
+
+  updateAsset$(data:AssetModel){
+    return this.putRequest<AssetModel>('/assets',data);
+  }
+
+  patchAsset$(data:AssetModel){
+    return this.patchRequest<AssetModel>('/assets',data);
+  }
+
+  deleteAsset$(id:number){
+    return this.deleteRequest(`/assets/${id}`);
+  }
+  //#endregion
 
 }

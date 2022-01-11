@@ -7,5 +7,8 @@ namespace Core.Interfaces
     public interface IAssetService
     {
         Task<IEnumerable<AssetModel>> GetAssetsAsync();
+        Task CreateAssetAsync(AssetModel assetModel);
+        Task UpdateAssetAsync(AssetModel assetModel);
+        Task DeleteAssetAsync(int id);
     }
 }

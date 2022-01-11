@@ -6,3 +6,4 @@ Infrastructure/bin/
 Infrastructure/obj/
 WebExperience.Test/wwwroot/ClientApp/.angular/
 /.vs/slnx.sqlite
+/.vs

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Core.Models;
@@ -41,12 +40,12 @@ namespace GeneralKnowledge.Test.Tests
 
                 var samples = data.Samples.SelectMany(a => a)
                     .GroupBy(a => a.Key)
-                    .Where(a => a.All(b=>double.TryParse(b.Value, out var value)))
-                    .Select(a=> new { Parameter = a.Key, Values = a.Select(a=>Convert.ToDouble(a.Value))});
+                    .Where(a => a.All(b=>double.TryParse(b.Value, out _)))
+                    .Select(a=> new { Parameter = a.Key, Values = a.Select(b=>Convert.ToDouble(b.Value))});
                 
                 //var samples = new Dictionary<string, List<double>>();
 
-                //foreach (var sample in data.Samples)
+                //foreach (var sample in data.Sample
                 //{
                 //    foreach (var (key, value) in sample)
                 //    {

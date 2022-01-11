@@ -15,6 +15,7 @@ namespace WebExperience.Test.Controllers
     {
         private readonly IAssetService _assetService;
         private readonly IMemoryCache _memoryCache;
+        private const string _cacheKey = "assetList";
 
         public AssetsController(IAssetService assetService, IMemoryCache memoryCache)
         {
@@ -25,24 +26,51 @@ namespace WebExperience.Test.Controllers
         [HttpGet]
         public async Task<IEnumerable<AssetModel>> Get()
         {
-            const string cacheKey = "assetList";
-            if (_memoryCache.TryGetValue(cacheKey, out IEnumerable<AssetModel> assetList)) return assetList.ToList();
-            //calling the server
-            assetList = await _assetService.GetAssetsAsync();
+            
+            if (_memoryCache.TryGetValue(_cacheKey, out IEnumerable<AssetModel> assetList)) 
+            {return assetList;}
+
+            return await RefreshCacheAsync(); 
+        }
+
+        [HttpPost]
+        public async Task Post(AssetModel model)
+        {
+            model.AssetId = Guid.NewGuid().ToString();
+            await _assetService.CreateAssetAsync(model);
+            await RefreshCacheAsync();
+
+        }
+
+        [HttpPut]
+        public async Task Put(AssetModel model)
+        {
+            await _assetService.UpdateAssetAsync(model);
+            await RefreshCacheAsync();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task Delete(int id)
+        {
+            await _assetService.DeleteAssetAsync(id);
+            await RefreshCacheAsync();
+        }
+
+        private async Task<IEnumerable<AssetModel>> RefreshCacheAsync()
+        {
+
+            var assetList = await _assetService.GetAssetsAsync();
 
             //setting up cache options
             var cacheExpiryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(50),
+                AbsoluteExpiration = DateTime.Now.AddSeconds(180),
                 Priority = CacheItemPriority.High,
-                SlidingExpiration = TimeSpan.FromSeconds(20)
+                SlidingExpiration = TimeSpan.FromSeconds(60)
             };
             //setting cache entries
-            var assetModels = assetList.ToList();
 
-            _memoryCache.Set(cacheKey, assetModels, cacheExpiryOptions);
-
-            return assetModels;
+            return _memoryCache.Set(_cacheKey, assetList, cacheExpiryOptions);
         }
     }
 }

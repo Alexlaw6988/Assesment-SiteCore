@@ -6,6 +6,7 @@ namespace Core.Models
 {
     public class AssetModel 
     {
+        public int Id { get; set; }
         public string AssetId { get; set; }
         public string FileName { get; set; }
         public string MimeType { get; set; }

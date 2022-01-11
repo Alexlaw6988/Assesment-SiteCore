@@ -21,10 +21,25 @@ namespace Core.Services
 
         public async Task<IEnumerable<AssetModel>> GetAssetsAsync()
         {
-            var assets = await _assetRepository.GetAllAsync();
+            var assets = (await _assetRepository.GetAllAsync()).OrderByDescending(x=>x.Id);
             return assets.Select(a => _mapper.Map<AssetModel>(a));
         }
 
+        public async Task CreateAssetAsync(AssetModel assetModel)
+        {
+            await _assetRepository.AddAsync(_mapper.Map<Asset>(assetModel));
+        }
+
+        public async Task UpdateAssetAsync(AssetModel assetModel)
+        {
+            await _assetRepository.UpdateAsync(_mapper.Map<Asset>(assetModel));
+        }
+
+        public async Task DeleteAssetAsync(int id)
+        {
+            await _assetRepository.DeleteAsync(_mapper.Map<Asset>(await _assetRepository.GetByIdAsync(id)));
+        }
+
     }
-   
+
 }

@@ -12,6 +12,7 @@ namespace Core.Mapper.Profiles
         public AssetProfile()
         {
             CreateMap<Asset, AssetModel>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(m => m.Id))
                 .ForMember(x => x.AssetId, opt => opt.MapFrom(m => m.AssetId))
                 .ForMember(x => x.FileName, opt => opt.MapFrom(m => m.FileName))
                 .ForMember(x => x.MimeType, opt => opt.MapFrom(m => m.MimeType))
